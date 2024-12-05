@@ -1,0 +1,699 @@
+openapi: 3.0.3
+info:
+  title: API для управления заявками
+  version: 1.0.0
+  description: API для работы с заявками, уведомлениями, аналитикой.
+servers:
+  - url: https://api.example.com
+    description: Основной сервер
+security:
+  - BearerAuth: []
+paths:
+  /api/v1/requests:
+    get:
+      tags:
+        - MainScreen
+      summary: Получить список заявок
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RequestSummary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/InternalError'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    post:
+      tags:
+        - MainScreen
+      summary: Создать новую заявку
+      description: Добавления новой заявки.
+      requestBody:
+        description: Данные для создания новой заявки
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request'
+      responses:
+        '201':
+          description: Заявка успешно создана
+        '400':
+          description: Некорректные данные в запросе
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Invalid request data
+                  errorCode:
+                    type: integer
+                    example: 400
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/InternalError'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/v1/request/{requestId}:
+    get:
+      tags:
+        - RequestDetails
+      summary: Получить информацию о конкретной заявке
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestDetails'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/InternalError'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    put:
+      tags:
+        - RequestDetails
+      summary: Обновить заявку
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
+      requestBody:
+        description: Обновление данных заявки
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestUpdate'
+      responses:
+        '200':
+          description: Успешное обновление заявки
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestDetails'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/InternalError'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/v1/requests/{requestId}/assign:
+    put:
+      tags:
+        - RequestDetails
+      summary: Назначить исполнителя для заявки
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
+      requestBody:
+        description: Назначение исполнителя
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignExecutor'
+      responses:
+        '200':
+          description: Исполнитель успешно назначен
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/InternalError'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/v1/requests/{requestId}/comment:
+    post:
+      tags:
+        - RequestDetails
+      summary: Добавить комментарий к заявке
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
+      requestBody:
+        description: Добавление комментария
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+      responses:
+        '200':
+          description: Комментарий успешно добавлен
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/InternalError'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/v1/notifications:
+    get:
+      tags:
+        - MainScreen
+      summary: Получить список уведомлений
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/InternalError'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/v1/departments:
+    get:
+      tags:
+        - Analytics
+      summary: Получить список отделов
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Department'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/InternalError'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/v1/employees:
+    get:
+      tags:
+        - Analytics
+      summary: Получить список сотрудников
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Employee'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/InternalError'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/v1/analytics/{departmentId}:
+    get:
+      tags:
+        - Analytics
+      summary: Получить отчет по отделу
+      parameters:
+        - name: departmentId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID отдела
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DepartmentReport'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/InternalError'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/v1/analytics/{employeeId}:
+    get:
+      tags:
+        - Analytics
+      summary: Получить отчет по сотруднику
+      parameters:
+        - name: employeeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID сотрудника
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeReport'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/InternalError'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+components:
+  parameters:
+    RequestId:
+      name: requestId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/RequestIdU'
+  schemas:
+    RequestIdU:
+      description: Идентификатор задачи
+      format: uuid
+      type: string
+    CommentIdU:
+      description: Идентификатор коментария
+      format: uuid
+      type: string
+    Person:
+      type: object
+      properties:
+        fullName:
+          type: string
+          description: ФИО
+        position:
+          type: string
+          description: Должность
+    TimeInfo:
+      type: string
+      format: date-time
+      description: Дата и время создания
+    Request:
+      type: object
+      properties:
+        requestId:
+          $ref: '#/components/schemas/RequestIdU'
+        author:
+          $ref: '#/components/schemas/Person'
+          description: Автор заявки
+        title:
+          type: string
+          description: Заголовок заявки
+        problem:
+          type: string
+          description: Проблема, описанная в заявке
+        address:
+          type: string
+          description: Адрес, Где нужна помощь
+    RequestSummary:
+      type: object
+      properties:
+        requestId:
+          $ref: '#/components/schemas/RequestIdU'
+        urgency:
+          $ref: '#/components/schemas/Urgency'
+        status:
+          $ref: '#/components/schemas/Status'
+        submissionDate:
+          $ref: '#/components/schemas/TimeInfo'
+        author:
+          $ref: '#/components/schemas/Person'
+          description: Автор заявки
+        executor:
+          $ref: '#/components/schemas/Person'
+          description: Назначенный исполнитель
+    RequestDetails:
+      allOf:
+        - $ref: '#/components/schemas/Request'
+        - type: object
+          properties:
+            urgency:
+              $ref: '#/components/schemas/Urgency'
+            status:
+              $ref: '#/components/schemas/Status'
+            completionReport:
+              type: array
+              description: Отчет о выполненных действиях
+              items:
+                type: object
+                properties:
+                  description:
+                    type: string
+                    description: Текст отчета
+                  completionDate:
+                    $ref: '#/components/schemas/TimeInfo'
+            comments:
+              type: array
+              description: Список комментариев
+              items:
+                $ref: '#/components/schemas/Comment'
+            executor:
+              $ref: '#/components/schemas/Person'
+              description: Назначенный исполнитель
+    Comment:
+      type: object
+      properties:
+        commentId:
+          $ref: '#/components/schemas/CommentIdU'
+        topic:
+          type: string
+          description: Тема комментария
+        text:
+          type: string
+          description: Текст комментария
+        author:
+          $ref: '#/components/schemas/Person'
+        createdAt:
+          $ref: '#/components/schemas/TimeInfo'
+    RequestUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Заголовок заявки
+        problem:
+          type: string
+          description: Проблема
+        urgency:
+          $ref: '#/components/schemas/Urgency'
+        status:
+          $ref: '#/components/schemas/Status'
+        address:
+          type: string
+          description: Адрес
+        completionReport:
+          type: array
+          description: Обновление отчета о выполнении
+          items:
+            type: object
+            properties:
+              description:
+                type: string
+                description: Текст отчета
+              completionDate:
+                $ref: '#/components/schemas/TimeInfo'
+    AssignExecutor:
+      type: object
+      properties:
+        executor:
+          $ref: '#/components/schemas/Person'
+    Notification:
+      type: object
+      properties:
+        notificationId:
+          type: integer
+          description: ID уведомления
+        message:
+          type: string
+          description: Текст уведомления
+        timestamp:
+          $ref: '#/components/schemas/TimeInfo'
+    Department:
+      type: object
+      properties:
+        departmentId:
+          type: integer
+          description: ID отдела
+        departmentName:
+          type: string
+          description: Название отдела
+        departmentHead:
+          $ref: '#/components/schemas/Person'
+          description: Руководитель отдела
+    Employee:
+      type: object
+      properties:
+        employeeId:
+          type: integer
+          description: ID сотрудника
+        person:
+          $ref: '#/components/schemas/Person'
+    DepartmentReport:
+      type: object
+      properties:
+        departmentId:
+          type: integer
+          description: ID отдела
+        departmentName:
+          type: string
+          description: Название отдела
+        departmentHead:
+          $ref: '#/components/schemas/Person'
+          description: Руководитель отдела
+        reportBody:
+          type: array
+          description: Содержимое отчета
+          items:
+            type: string
+    EmployeeReport:
+      type: object
+      properties:
+        employeeId:
+          type: integer
+          description: ID сотрудника
+        person:
+          $ref: '#/components/schemas/Person'
+        reportBody:
+          type: array
+          description: Содержимое отчета
+          items:
+            type: string
+    Urgency:
+      type: string
+      enum:
+        - Высокая
+        - Средняя
+        - Низкая
+    Status:
+      type: string
+      enum:
+        - В работе
+        - В ожидании
+        - Выполнено
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    NotFound:
+      description: Объект не найден
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Object not found
+              errorCode:
+                type: integer
+                example: 404
+    Unauthorized:
+      description: Неавторизованный доступ
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Unauthorized
+              errorCode:
+                type: integer
+                example: 401
+    InternalError:
+      description: Внутренняя ошибка
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Internal error
+              errorCode:
+                type: integer
+                example: 402
+    Forbidden:
+      description: Доступ запрещен
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Access forbidden
+              errorCode:
+                type: integer
+                example: 403
+    InternalServerError:
+      description: Внутренняя ошибка сервера
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Internal server error
+              errorCode:
+                type: integer
+                example: 500
+    NotImplemented:
+      description: Функция не реализована
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Not implemented
+              errorCode:
+                type: integer
+                example: 501
+    BadGateway:
+      description: Ошибка шлюза
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Bad gateway
+              errorCode:
+                type: integer
+                example: 502
+    ServiceUnavailable:
+      description: Сервис недоступен
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Service unavailable
+              errorCode:
+                type: integer
+                example: 503

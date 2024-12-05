@@ -1,7 +1,0 @@
-position: 6 # для сортировки папки в сайдбаре
-label: Диаграммы БД # название пункта меню в сайдбаре
-collapsible: true
-collapsed: true
-link:
-  type: generated-index
-  title: Диаграммы БД # Заголовок на странице

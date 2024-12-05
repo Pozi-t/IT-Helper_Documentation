@@ -1,7 +1,0 @@
-position: 7 # для сортировки папки в сайдбаре
-label: Платформизация  # название пункта меню в сайдбаре
-collapsible: true
-collapsed: true
-link:
-  type: generated-index
-  title: Платформизация  # Заголовок на странице
